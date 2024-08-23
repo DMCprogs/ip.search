@@ -1,0 +1,12 @@
+.main-wrapper {
+	padding-top: 50px;
+}
+.textarea-logs {
+	height: 500px !important;
+	white-space: pre;
+	font-size: 14px;
+	
+}
+template {
+	display: none;
+}
