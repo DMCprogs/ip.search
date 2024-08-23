@@ -22,12 +22,7 @@ class SyncComponent extends CBitrixComponent
 {
     protected $actions;
 
-    public function onPrepareComponentParams($arParams)
-    {
-        // Здесь может быть обработка входящих параметров, если такие есть
-        $arParams['ID_HIGLOAD'] = isset($arParams['ID_HIGLOAD']) ? trim($arParams['ID_HIGLOAD']) : "1";
-        return $arParams;
-    }
+   
 
     public function executeComponent()
     {

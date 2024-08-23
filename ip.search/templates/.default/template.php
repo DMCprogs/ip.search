@@ -34,15 +34,15 @@
 
 				
 <script>
+	// инициализация скрипта с нужными ему данными
 			ipsearch.init({
-				frontfile: "<?=$templateFolder?>",
-				idHigload:"<?=$arParams["ID_HIGLOAD"]?>",
-				ipServic:"<?=$arParams["OPTION_SELECTION"]?>",
+				frontfile: "<?=$templateFolder?>", //папка компоненита
+				idHigload:"<?=$arParams["ID_HIGLOAD"]?>",//id higload block
+				ipServic:"<?=$arParams["OPTION_SELECTION"]?>",//выбранный сервис в настройках компоненит
 			});
 		</script>
 		
 
-		<!-- /Templates -->
 
 	
 	

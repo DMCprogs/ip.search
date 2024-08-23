@@ -1,7 +1,6 @@
 document.querySelector('.ip-input').addEventListener('input', function (event) {
     // Регулярное выражение, которое разрешает только цифры и точки
     const regexp = /^[0-9.]*$/;
-    // Получение текущего значения поля ввода
     const value = this.value;
     // Если значение не соответствует регулярному выражению, удаляем последний символ
     if (!regexp.test(value)) {
@@ -12,6 +11,7 @@ var ipsearch = {
 };
 
 ipsearch.init = function (params) {
+    // получение данных и нужной html разметки
     let frontfile = params.frontfile;
     let idHigload = params.idHigload;
     let ipServic = params.ipServic;
@@ -19,9 +19,11 @@ ipsearch.init = function (params) {
     let textInfo = document.querySelector(".textarea-logs");
     let ip = document.querySelector(".ip-input");
     let errorDiv = document.querySelector(".text-danger");
+    // при клике на кнопку происходит ajax запрос
     button.onclick = function (element) {
 
         if (ip.value != "") {
+
             $.ajax({
                 url: frontfile + '/getData.php',
                 method: 'post',
@@ -29,6 +31,7 @@ ipsearch.init = function (params) {
                 data: { IP: ip.value, ID: idHigload, SERVIC: ipServic, TYPE: "search" },
                 success: function (data) {
                     switch (data) {
+                        // если в higloa блоке не найдена информация об ip то будет запрос к сервису который был настроен в параметрах инфоблока
                         case "OPTION_1":
                             $.ajax({
                                 url: 'https://api.sypexgeo.net/json/' + ip.value,
@@ -36,11 +39,12 @@ ipsearch.init = function (params) {
                                 success: function (data) {
 
                                     if (data.city === "") {
-                                        // Обработка случая, когда "success": false
+                                        // Обработка случая, когда "city" пустое тк sypexgeo нет status и просто приходят пустые данные
 
                                         errorDiv.textContent = "Ошибка в данных sypexgeo: " + data.error.type;
                                     } else {
                                         errorDiv.textContent="";
+                                        // если данные есть то сохраняем данные об ip в higload
                                         textInfo.value = JSON.stringify(data, null, 2);
                                         $.ajax({
                                             url: frontfile + '/getData.php',
@@ -69,10 +73,10 @@ ipsearch.init = function (params) {
                                 success: function (data) {
                                     if (data.success === false) {
                                         // Обработка случая, когда "success": false
-                                        console.log("kek");
+                                      
                                         errorDiv.textContent = "Ошибка в данных ipstack: " + data.error.type;
                                     } else {
-                                        console.log("kek");
+                                            // если данные есть то сохраняем данные об ip в higload
                                         errorDiv.textContent="";
                                         textInfo.value = JSON.stringify(data, null, 2);
                                         $.ajax({
@@ -94,6 +98,7 @@ ipsearch.init = function (params) {
                                 }
                             });
                             break;
+                            // если ip найден в higload блоке или же скрипт выдал ошибку
                         default:
                             console.log(data.status);
                             if(data.status==="error"){

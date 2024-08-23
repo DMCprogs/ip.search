@@ -6,7 +6,7 @@ use Bitrix\Highloadblock as HL;
 use Bitrix\Main\Entity;
 
 Loader::includeModule("highloadblock");
-
+// проверка является ли id int
 $hlbl = filter_input(INPUT_POST, 'ID', FILTER_VALIDATE_INT);
 if ($hlbl === false) {
     echo json_encode([
@@ -15,7 +15,7 @@ if ($hlbl === false) {
     ]);
     exit;
 }
-
+// проверка валидный ли ip
 $ip = filter_input(INPUT_POST, 'IP', FILTER_VALIDATE_IP);
 if ($ip === false) {
     echo json_encode([
@@ -24,7 +24,7 @@ if ($ip === false) {
     ]);
     exit;
 }
-
+// минимальная защита от xss атак и sql инекций
 $servic = filter_input(INPUT_POST, 'SERVIC', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 $type = filter_input(INPUT_POST, 'TYPE', FILTER_SANITIZE_FULL_SPECIAL_CHARS);
 
@@ -40,12 +40,12 @@ if ($type === "search" && $hlbl !== false && $ip !== false) {
             "order" => array("ID" => "ASC"),
             "filter" => array("UF_IP" => $ip)  // Задаем параметры фильтра выборки
         ));
-
+// получаем данные об ip из higload блока если они есть 
         $info = null;
         while ($arData = $rsData->Fetch()) {
             $info = $arData["UF_IP_INFO"];
         }
-
+// если данные нет то мы отправляем запрос к сервису который выбран в компоненте
         if ($info === null) {
             switch ($servic) {
                 case 'OPTION_1':
@@ -63,6 +63,7 @@ if ($type === "search" && $hlbl !== false && $ip !== false) {
                     break;
             }
         } else {
+            // если данные есть мы их выводим
             echo json_encode([
                 'status' => "success",
                 'data' => $info,
@@ -76,7 +77,7 @@ if ($type === "search" && $hlbl !== false && $ip !== false) {
     }
 } elseif ($type === "add" && $hlbl !== false && $ip !== false) {
     $ipInfo = $_POST['IP_INFO'];
-
+// добавление по d7 данных об ip в higload
     $hlblock = HL\HighloadBlockTable::getById($hlbl)->fetch();
     if ($hlblock) {
         $entity = HL\HighloadBlockTable::compileEntity($hlblock);
@@ -100,6 +101,7 @@ if ($type === "search" && $hlbl !== false && $ip !== false) {
         ]);
     }
 } else {
+    // eckb операция не add или не search
     echo json_encode([
         'status' => "error",
         'data' => "Неизвестная операция",
